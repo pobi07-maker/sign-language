@@ -7,7 +7,9 @@
   <style>
     :root {
       --primary: #2563eb;
+      --primary-hover: #1d4ed8;
       --secondary: #059669;
+      --secondary-hover: #047857;
       --text: #1f2937;
       --text-muted: #6b7280;
       --border: #e5e7eb;
@@ -19,10 +21,13 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
     }
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding: 24px 16px;
+      padding: 16px;
       line-height: 1.5;
     }
     .container {
@@ -31,16 +36,97 @@
     }
     header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
     header h1 {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       color: #1e3a8a;
       margin-bottom: 6px;
     }
     header p {
       color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    /* 상단 고정 컨트롤 바 (검색 + 회차 바로가기) */
+    .sticky-control {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @media (min-width: 640px) {
+      .sticky-control {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    /* 검색창 스타일 */
+    .search-box {
+      position: relative;
+      flex: 1;
+    }
+    .search-input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
       font-size: 0.95rem;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    /* 회차 선택 드롭다운 / 버튼 그룹 */
+    .session-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .session-select {
+      padding: 9px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+      background-color: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .session-select {
+        width: auto;
+      }
+    }
+
+    /* 섹션 제목 */
+    .section-wrap {
+      margin-bottom: 28px;
     }
     .section-title {
       font-size: 1.25rem;
@@ -49,12 +135,15 @@
       background: white;
       border-left: 5px solid var(--primary);
       border-radius: 6px;
-      margin: 28px 0 14px 0;
+      margin: 20px 0 14px 0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      scroll-margin-top: 130px;
     }
     .section-title.sec2 {
       border-left-color: var(--secondary);
     }
+
+    /* 단어 카드 그리드 */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -73,6 +162,9 @@
     .card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .card.hidden {
+      display: none !important;
     }
     .card-header {
       display: flex;
@@ -138,6 +230,18 @@
     .btn-yt:hover {
       background-color: #fecaca;
     }
+
+    /* 검색 결과 없음 안내문구 */
+    .no-result {
+      display: none;
+      text-align: center;
+      padding: 40px 16px;
+      background: white;
+      border-radius: 10px;
+      color: var(--text-muted);
+      border: 1px dashed #cbd5e1;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -145,316 +249,374 @@
   <div class="container">
     <header>
       <h1>수어교육 회차별 단어 학습</h1>
-      <p>단어 카드의 버튼을 클릭하면 국립국어원 표준 사전 영상 및 유튜브 시연 영상으로 연결됩니다.</p>
+      <p>단어를 직접 검색하거나 회차를 선택하여 원하는 수어 영상으로 이동하세요.</p>
     </header>
 
-    <!-- 1차시 -->
-    <h2 class="section-title">수어교육 1차시 - 기본 인사와 소개</h2>
-    <div class="grid">
-      <!-- 반갑습니다 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">반갑습니다</span>
-          <span class="badge">인사</span>
-        </div>
-        <p class="desc">가슴 앞에서 두 주먹을 가볍게 쥐고 위아래로 흔들며 반가움을 표현합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=12464" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+반갑습니다" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
+    <!-- 상단 컨트롤 영역 (검색창 + 회차 선택 드롭다운) -->
+    <div class="sticky-control">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="단어 검색 (예: 이름, 가족, 있다...)" 
+          autocomplete="off"
+        />
       </div>
-
-      <!-- 이름 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">이름</span>
-          <span class="badge">소개</span>
-        </div>
-        <p class="desc">왼손 손바닥(가슴 부위)에 오른손 엄지끝을 도장 찍듯이 가볍게 찍어줍니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7059" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+이름" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 무엇 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">무엇</span>
-          <span class="badge">의문사</span>
-        </div>
-        <p class="desc">검지 손가락을 세워 좌우로 살짝 흔들며 의문을 나타내는 표정을 짓습니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7224" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+무엇" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 나이 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">나이</span>
-          <span class="badge">소개</span>
-        </div>
-        <p class="desc">턱 밑에 오른손 손가락을 대고 아래로 가볍게 내립니다 (수염을 쓸어내리는 형상).</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=9746" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+나이" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 몇, 얼마 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">몇, 얼마</span>
-          <span class="badge">수량</span>
-        </div>
-        <p class="desc">모았던 손가락을 바깥쪽으로 튕기듯 펴면서 질문하는 표정을 짓습니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7806" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+몇+얼마" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 당신 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">당신</span>
-          <span class="badge">대명사</span>
-        </div>
-        <p class="desc">손끝 또는 손바닥을 펴서 정중하게 상대방 방향을 가리킵니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11845" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+당신" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 일(직업) : 비활성화 처리 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">일 (직업)</span>
-          <span class="badge">소개</span>
-        </div>
-        <p class="desc">두 주먹을 쥐고 맞대어 위아래로 움직이며 활동과 노동을 표현합니다.</p>
-        <div class="btn-group">
-          <span class="btn btn-disabled" aria-disabled="true">영상 준비중</span>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+직업+일" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 알다 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">알다</span>
-          <span class="badge">인지</span>
-        </div>
-        <p class="desc">오른손 손가락 끝을 관자놀이 부근에 대며 고개를 가볍게 끄덕입니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6031" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+알다" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 모르다 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">모르다</span>
-          <span class="badge">인지</span>
-        </div>
-        <p class="desc">턱이나 목 앞을 손바닥으로 스치며 밖으로 털어내듯 동작합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11931" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+모르다" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
-
-      <!-- 다시 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">다시</span>
-          <span class="badge">부사</span>
-        </div>
-        <p class="desc">손을 가볍게 돌려 원위치로 가져오며 반복의 의미를 나타냅니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7422" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+다시" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
+      <div class="session-actions">
+        <select id="sessionSelector" class="session-select" onchange="scrollToSession(this.value)">
+          <option value="" disabled selected> 회차 바로가기 선택 </option>
+          <option value="session-1">1차시 - 기본 인사와 소개</option>
+          <option value="session-2">2차시 - 우리 가족</option>
+        </select>
       </div>
     </div>
+
+    <!-- 검색 결과 없을 때 표시 -->
+    <div id="noResult" class="no-result">
+      검색된 단어가 없습니다. 다른 검색어를 입력해 보세요.
+    </div>
+
+    <!-- 1차시 -->
+    <section id="session-1" class="section-wrap">
+      <h2 class="section-title">수어교육 1차시 - 기본 인사와 소개</h2>
+      <div class="grid">
+        <div class="card" data-word="반갑습니다">
+          <div class="card-header">
+            <span class="word-name">반갑습니다</span>
+            <span class="badge">인사</span>
+          </div>
+          <p class="desc">가슴 앞에서 두 주먹을 가볍게 쥐고 위아래로 흔들며 반가움을 표현합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=12464" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+반갑습니다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="이름">
+          <div class="card-header">
+            <span class="word-name">이름</span>
+            <span class="badge">소개</span>
+          </div>
+          <p class="desc">왼손 손바닥(가슴 부위)에 오른손 엄지끝을 도장 찍듯이 가볍게 찍어줍니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7059" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+이름" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="무엇">
+          <div class="card-header">
+            <span class="word-name">무엇</span>
+            <span class="badge">의문사</span>
+          </div>
+          <p class="desc">검지 손가락을 세워 좌우로 살짝 흔들며 의문을 나타내는 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7224" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+무엇" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="나이">
+          <div class="card-header">
+            <span class="word-name">나이</span>
+            <span class="badge">소개</span>
+          </div>
+          <p class="desc">턱 밑에 오른손 손가락을 대고 아래로 가볍게 내립니다 (수염을 쓸어내리는 형상).</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=9746" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+나이" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="몇 얼마 몇, 얼마">
+          <div class="card-header">
+            <span class="word-name">몇, 얼마</span>
+            <span class="badge">수량</span>
+          </div>
+          <p class="desc">모았던 손가락을 바깥쪽으로 튕기듯 펴면서 질문하는 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7806" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+몇+얼마" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="당신 너">
+          <div class="card-header">
+            <span class="word-name">당신</span>
+            <span class="badge">대명사</span>
+          </div>
+          <p class="desc">손끝 또는 손바닥을 펴서 정중하게 상대방 방향을 가리킵니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11845" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+당신" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="일 직업 일(직업)">
+          <div class="card-header">
+            <span class="word-name">일 (직업)</span>
+            <span class="badge">소개</span>
+          </div>
+          <p class="desc">두 주먹을 쥐고 맞대어 위아래로 움직이며 활동과 노동을 표현합니다.</p>
+          <div class="btn-group">
+            <span class="btn btn-disabled" aria-disabled="true">영상 준비중</span>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+직업+일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="알다">
+          <div class="card-header">
+            <span class="word-name">알다</span>
+            <span class="badge">인지</span>
+          </div>
+          <p class="desc">오른손 손가락 끝을 관자놀이 부근에 대며 고개를 가볍게 끄덕입니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6031" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+알다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="모르다">
+          <div class="card-header">
+            <span class="word-name">모르다</span>
+            <span class="badge">인지</span>
+          </div>
+          <p class="desc">턱이나 목 앞을 손바닥으로 스치며 밖으로 털어내듯 동작합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11931" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+모르다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card" data-word="다시">
+          <div class="card-header">
+            <span class="word-name">다시</span>
+            <span class="badge">부사</span>
+          </div>
+          <p class="desc">손을 가볍게 돌려 원위치로 가져오며 반복의 의미를 나타냅니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7422" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+다시" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- 2차시 -->
-    <h2 class="section-title sec2">수어교육 2차시 - 우리 가족</h2>
-    <div class="grid">
-      <!-- 가족 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">가족</span>
-          <span class="badge">가족</span>
+    <section id="session-2" class="section-wrap">
+      <h2 class="section-title sec2">수어교육 2차시 - 우리 가족</h2>
+      <div class="grid">
+        <div class="card" data-word="가족">
+          <div class="card-header">
+            <span class="word-name">가족</span>
+            <span class="badge">가족</span>
+          </div>
+          <p class="desc">양손을 둥글게 모아 지붕이나 울타리를 만들며 한 가족을 나타냅니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6770" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+가족" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">양손을 둥글게 모아 지붕이나 울타리를 만들며 한 가족을 나타냅니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6770" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+가족" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 누구 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">누구</span>
-          <span class="badge">의문사</span>
+        <div class="card" data-word="누구">
+          <div class="card-header">
+            <span class="word-name">누구</span>
+            <span class="badge">의문사</span>
+          </div>
+          <p class="desc">코앞에서 검지를 살짝 구부렸다 펴며 질문하는 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=5394" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+누구" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">코앞에서 검지를 살짝 구부렸다 펴며 질문하는 표정을 짓습니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=5394" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+누구" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 아버지 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">아버지</span>
-          <span class="badge">가족</span>
+        <div class="card" data-word="아버지 아빠">
+          <div class="card-header">
+            <span class="word-name">아버지</span>
+            <span class="badge">가족</span>
+          </div>
+          <p class="desc">엄지손가락(남성)을 세워 뺨에 대는 동작으로 표현합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=2570" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아버지" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">엄지손가락(남성)을 세워 뺨에 대는 동작으로 표현합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=2570" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아버지" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 어머니 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">어머니</span>
-          <span class="badge">가족</span>
+        <div class="card" data-word="어머니 엄마">
+          <div class="card-header">
+            <span class="word-name">어머니</span>
+            <span class="badge">가족</span>
+          </div>
+          <p class="desc">새끼손가락(여성)을 펴서 뺨에 대는 동작으로 표현합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8214" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+어머니" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">새끼손가락(여성)을 펴서 뺨에 대는 동작으로 표현합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8214" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+어머니" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 남편 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">남편</span>
-          <span class="badge">가족</span>
+        <div class="card" data-word="남편">
+          <div class="card-header">
+            <span class="word-name">남편</span>
+            <span class="badge">가족</span>
+          </div>
+          <p class="desc">엄지손가락(남자)과 약지 손가락(결혼반지)을 결합하여 나타냅니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6618" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+남편" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">엄지손가락(남자)과 약지 손가락(결혼반지)을 결합하여 나타냅니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6618" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+남편" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 아내 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">아내</span>
-          <span class="badge">가족</span>
+        <div class="card" data-word="아내 부인 처">
+          <div class="card-header">
+            <span class="word-name">아내</span>
+            <span class="badge">가족</span>
+          </div>
+          <p class="desc">새끼손가락(여자)과 결혼을 의미하는 수형을 이어붙여 표현합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11062" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아내" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">새끼손가락(여자)과 결혼을 의미하는 수형을 이어붙여 표현합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11062" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아내" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 아들 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">아들</span>
-          <span class="badge">가족</span>
+        <div class="card" data-word="아들">
+          <div class="card-header">
+            <span class="word-name">아들</span>
+            <span class="badge">가족</span>
+          </div>
+          <p class="desc">엄지손가락(남자)을 세운 후 출생(태어남)을 나타내는 수형을 결합합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8127" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아들" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">엄지손가락(남자)을 세운 후 출생(태어남)을 나타내는 수형을 결합합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8127" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아들" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 딸 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">딸</span>
-          <span class="badge">가족</span>
+        <div class="card" data-word="딸">
+          <div class="card-header">
+            <span class="word-name">딸</span>
+            <span class="badge">가족</span>
+          </div>
+          <p class="desc">새끼손가락(여자)을 편 후 출생(태어남)을 나타내는 수형을 결합합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6756" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+딸" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">새끼손가락(여자)을 편 후 출생(태어남)을 나타내는 수형을 결합합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6756" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+딸" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 같이(함께) -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">같이 (함께)</span>
-          <span class="badge">상태</span>
+        <div class="card" data-word="같이 함께 같이(함께)">
+          <div class="card-header">
+            <span class="word-name">같이 (함께)</span>
+            <span class="badge">상태</span>
+          </div>
+          <p class="desc">양손 검지를 나란히 붙여 함께 나아가는 모습을 그립니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=19523" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+같이+함께" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">양손 검지를 나란히 붙여 함께 나아가는 모습을 그립니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=19523" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+같이+함께" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 지내다(살다) -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">지내다 (살다)</span>
-          <span class="badge">동사</span>
+        <div class="card" data-word="지내다 살다 지내다(살다)">
+          <div class="card-header">
+            <span class="word-name">지내다 (살다)</span>
+            <span class="badge">동사</span>
+          </div>
+          <p class="desc">가슴 앞에서 손을 편안하게 굴리며 삶을 영위하는 모습을 표현합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8291" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+지내다+살다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">가슴 앞에서 손을 편안하게 굴리며 삶을 영위하는 모습을 표현합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8291" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+지내다+살다" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 있다 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">있다</span>
-          <span class="badge">존재</span>
+        <div class="card" data-word="있다">
+          <div class="card-header">
+            <span class="word-name">있다</span>
+            <span class="badge">존재</span>
+          </div>
+          <p class="desc">주먹에서 엄지와 새끼를 펴서 아래로 살짝 내리는 존재 수형을 취합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8966" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+있다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">주먹에서 엄지와 새끼를 펴서 아래로 살짝 내리는 존재 수형을 취합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8966" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+있다" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 없다 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">없다</span>
-          <span class="badge">존재</span>
+        <div class="card" data-word="없다">
+          <div class="card-header">
+            <span class="word-name">없다</span>
+            <span class="badge">존재</span>
+          </div>
+          <p class="desc">손바닥을 편 채 얼굴 앞이나 가슴 앞에서 좌우로 가볍게 흔듭니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=2722" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+없다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
-        <p class="desc">손바닥을 편 채 얼굴 앞이나 가슴 앞에서 좌우로 가볍게 흔듭니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=2722" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+없다" target="_blank" rel="noopener">유튜브 ▷</a>
-        </div>
-      </div>
 
-      <!-- 잘하다 -->
-      <div class="card">
-        <div class="card-header">
-          <span class="word-name">잘하다</span>
-          <span class="badge">상태</span>
-        </div>
-        <p class="desc">엄지손가락을 세워 앞으로 내밀며 칭찬하는 수형을 취합니다.</p>
-        <div class="btn-group">
-          <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=9543" target="_blank" rel="noopener">국립국어원 영상</a>
-          <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+잘하다" target="_blank" rel="noopener">유튜브 ▷</a>
+        <div class="card" data-word="잘하다">
+          <div class="card-header">
+            <span class="word-name">잘하다</span>
+            <span class="badge">상태</span>
+          </div>
+          <p class="desc">엄지손가락을 세워 앞으로 내밀며 칭찬하는 수형을 취합니다.</p>
+          <div class="btn-group">
+            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=9543" target="_blank" rel="noopener">국립국어원 영상</a>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+잘하다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 
+  <script>
+    // 1. 회차 선택 시 부드럽게 스크롤 이동
+    function scrollToSession(targetId) {
+      if (!targetId) return;
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // 2. 실시간 단어 검색 및 자동 필터링 기능
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.card');
+    const sections = document.querySelectorAll('.section-wrap');
+    const noResult = document.getElementById('noResult');
+
+    searchInput.addEventListener('input', function(e) {
+      const keyword = e.target.value.trim().toLowerCase();
+      let visibleCardCount = 0;
+
+      cards.forEach(card => {
+        const word = card.getAttribute('data-word').toLowerCase();
+        const desc = card.querySelector('.desc').textContent.toLowerCase();
+
+        // 단어명 또는 설명 텍스트에 검색어가 포함되어 있는지 확인
+        if (word.includes(keyword) || desc.includes(keyword)) {
+          card.classList.remove('hidden');
+          visibleCardCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // 검색 중 해당 차시에 일치하는 단어가 하나도 없으면 차시 제목 전체 숨김
+      sections.forEach(sec => {
+        const visibleInSec = sec.querySelectorAll('.card:not(.hidden)').length;
+        if (visibleInSec === 0) {
+          sec.style.display = 'none';
+        } else {
+          sec.style.display = 'block';
+        }
+      });
+
+      // 전체 결과가 없을 때 안내문구 표시
+      if (visibleCardCount === 0) {
+        noResult.style.display = 'block';
+      } else {
+        noResult.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
