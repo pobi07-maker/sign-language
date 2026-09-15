@@ -12,6 +12,9 @@
       --secondary: #047857;
       --secondary-bg: #ecfdf5;
       --secondary-border: #a7f3d0;
+      --accent: #d97706;
+      --accent-bg: #fffbeb;
+      --accent-border: #fde68a;
       --text-main: #0f172a;
       --text-sub: #475569;
       --bg-page: #f1f5f9;
@@ -76,7 +79,7 @@
       }
     }
 
-    /* ★ 눈에 띄게 강조된 검색창 라인 디자인 ★ */
+    /* 검색창 */
     .search-box {
       position: relative;
       flex: 1;
@@ -88,27 +91,15 @@
       font-weight: 600;
       color: #0f172a;
       background-color: #ffffff;
-      /* 또렷한 2px 블루 테두리 및 내부 음영 */
       border: 2px solid #3b82f6;
       border-radius: 12px;
       outline: none;
       box-shadow: 0 2px 6px rgba(59, 130, 246, 0.12);
       transition: all 0.2s ease-in-out;
     }
-    .search-input::placeholder {
-      color: #64748b;
-      font-weight: 500;
-    }
-    /* 마우스 호버 시 라인 강조 */
-    .search-input:hover {
-      border-color: #2563eb;
-      box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
-    }
-    /* 클릭(포커스) 시 강력한 라인 및 포커스 링 */
     .search-input:focus {
       border-color: #1d4ed8;
-      background-color: #ffffff;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.22), 0 4px 12px rgba(29, 78, 216, 0.15);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.22);
     }
     .search-icon {
       position: absolute;
@@ -120,7 +111,7 @@
       pointer-events: none;
     }
 
-    /* 회차 바로가기 (딥 인디고 전용 버튼) */
+    /* 회차 바로가기 */
     .session-actions {
       display: flex;
     }
@@ -142,15 +133,6 @@
       cursor: pointer;
       width: 100%;
       box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
-      transition: all 0.2s ease;
-    }
-    .session-select:hover {
-      background: linear-gradient(135deg, #172554 0%, #1d4ed8 100%);
-      box-shadow: 0 5px 14px rgba(37, 99, 235, 0.35);
-      transform: translateY(-1px);
-    }
-    .session-select:focus {
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
     }
     .session-select option {
       background-color: #ffffff;
@@ -172,7 +154,7 @@
         width: auto;
       }
       .session-select {
-        min-width: 230px;
+        min-width: 240px;
       }
     }
 
@@ -189,9 +171,6 @@
       margin-bottom: 18px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       scroll-margin-top: 140px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
     .section-title.sec1 {
       border-left: 6px solid var(--primary);
@@ -201,15 +180,17 @@
       border-left: 6px solid var(--secondary);
       color: #064e3b;
     }
+    .section-title.sec3 {
+      border-left: 6px solid var(--accent);
+      color: #92400e;
+    }
 
-    /* 단어 카드 그리드 */
+    /* 카드 그리드 */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
       gap: 16px;
     }
-
-    /* 단어별 박스(카드) */
     .card {
       background: #ffffff;
       border-radius: 14px;
@@ -219,34 +200,17 @@
       justify-content: space-between;
       border: 1.5px solid #e2e8f0;
       box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .sec1-card {
-      border-left: 5px solid var(--primary);
-    }
-    .sec1-card:hover {
+    .sec1-card { border-left: 5px solid var(--primary); }
+    .sec2-card { border-left: 5px solid var(--secondary); }
+    .sec3-card { border-left: 5px solid var(--accent); }
+    .card:hover {
       transform: translateY(-4px);
-      border-color: var(--primary);
-      border-left-width: 5px;
-      box-shadow: 0 10px 22px rgba(29, 78, 216, 0.12);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
     }
-    .sec2-card {
-      border-left: 5px solid var(--secondary);
-    }
-    .sec2-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--secondary);
-      border-left-width: 5px;
-      box-shadow: 0 10px 22px rgba(4, 120, 87, 0.12);
-    }
+    .card.hidden { display: none !important; }
 
-    .card.hidden {
-      display: none !important;
-    }
-
-    /* 카드 헤더 (단어명 + 뱃지) */
     .card-header {
       display: flex;
       align-items: center;
@@ -259,7 +223,6 @@
       font-size: 1.35rem;
       font-weight: 800;
       color: #0f172a;
-      letter-spacing: -0.3px;
     }
     .badge {
       font-size: 0.78rem;
@@ -267,18 +230,10 @@
       padding: 3px 9px;
       border-radius: 6px;
     }
-    .sec1-badge {
-      background: var(--primary-bg);
-      color: var(--primary);
-      border: 1px solid var(--primary-border);
-    }
-    .sec2-badge {
-      background: var(--secondary-bg);
-      color: var(--secondary);
-      border: 1px solid var(--secondary-border);
-    }
+    .sec1-badge { background: var(--primary-bg); color: var(--primary); border: 1px solid var(--primary-border); }
+    .sec2-badge { background: var(--secondary-bg); color: var(--secondary); border: 1px solid var(--secondary-border); }
+    .sec3-badge { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
 
-    /* 설명 */
     .desc {
       font-size: 0.92rem;
       color: var(--text-sub);
@@ -288,10 +243,10 @@
       word-break: keep-all;
     }
 
-    /* 버튼 영역 */
+    /* 버튼 그룹 */
     .btn-group {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 9px;
     }
     .btn {
@@ -303,17 +258,17 @@
       font-weight: 700;
       text-decoration: none;
       border-radius: 8px;
-      text-align: center;
+      border: none;
+      cursor: pointer;
       transition: all 0.18s ease;
     }
     .btn-dict {
       background-color: #0f172a;
       color: #ffffff;
-      border: 1px solid #0f172a;
-      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
     }
     .btn-dict:hover {
-      background-color: #1e293b;
+      background-color: #2563eb;
       transform: translateY(-1px);
     }
     .btn-yt {
@@ -330,12 +285,10 @@
       background-color: #f1f5f9 !important;
       color: #94a3b8 !important;
       border: 1px dashed #cbd5e1 !important;
-      box-shadow: none !important;
       cursor: not-allowed !important;
       pointer-events: none;
     }
 
-    /* 검색 결과 없음 */
     .no-result {
       display: none;
       text-align: center;
@@ -355,10 +308,10 @@
   <div class="container">
     <header>
       <h1>수어교육 회차별 단어 학습</h1>
-      <p>단어를 직접 검색하거나 회차를 선택하여 원하는 수어 영상으로 이동하세요.</p>
+      <p>단어 카드의 <strong>[사전 영상 ▷]</strong>을 누르면 국립국어원 표준 영상창으로 안전하고 깨끗하게 열립니다.</p>
     </header>
 
-    <!-- 상단 컨트롤 (강조된 검색창 + 회차 바로가기) -->
+    <!-- 상단 컨트롤 -->
     <div class="sticky-control">
       <div class="search-box">
         <span class="search-icon">🔍</span>
@@ -366,7 +319,7 @@
           type="text" 
           id="searchInput" 
           class="search-input" 
-          placeholder="단어 검색 (예: 이름, 가족, 있다...)" 
+          placeholder="단어 검색 (예: 월요일, 오늘, 약속, 가족...)" 
           autocomplete="off"
         />
       </div>
@@ -376,21 +329,18 @@
             <option value="" disabled selected>📖 회차 바로가기</option>
             <option value="session-1">1차시 - 기본 인사와 소개</option>
             <option value="session-2">2차시 - 우리 가족</option>
+            <option value="session-3">3차시 - 시간, 날짜, 약속</option>
           </select>
         </div>
       </div>
     </div>
 
-    <!-- 검색 결과 없을 때 안내 -->
-    <div id="noResult" class="no-result">
-      검색어와 일치하는 단어가 없습니다. 다시 검색해 보세요.
-    </div>
+    <div id="noResult" class="no-result">검색어와 일치하는 단어가 없습니다.</div>
 
     <!-- 1차시 -->
     <section id="session-1" class="section-wrap">
       <h2 class="section-title sec1">🤟 수어교육 1차시 - 기본 인사와 소개</h2>
       <div class="grid">
-        <!-- 반갑습니다 -->
         <div class="card sec1-card" data-word="반갑습니다">
           <div class="card-header">
             <span class="word-name">반갑습니다</span>
@@ -398,12 +348,11 @@
           </div>
           <p class="desc">가슴 앞에서 두 주먹을 가볍게 쥐고 위아래로 흔들며 반가움을 표현합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=12464" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(12464)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+반갑습니다" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 이름 -->
         <div class="card sec1-card" data-word="이름">
           <div class="card-header">
             <span class="word-name">이름</span>
@@ -411,12 +360,11 @@
           </div>
           <p class="desc">왼손 손바닥(가슴 부위)에 오른손 엄지끝을 도장 찍듯이 가볍게 찍어줍니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7059" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(7059)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+이름" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 무엇 -->
         <div class="card sec1-card" data-word="무엇">
           <div class="card-header">
             <span class="word-name">무엇</span>
@@ -424,12 +372,11 @@
           </div>
           <p class="desc">검지 손가락을 세워 좌우로 살짝 흔들며 의문을 나타내는 표정을 짓습니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7224" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(7224)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+무엇" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 나이 -->
         <div class="card sec1-card" data-word="나이">
           <div class="card-header">
             <span class="word-name">나이</span>
@@ -437,12 +384,11 @@
           </div>
           <p class="desc">턱 밑에 오른손 손가락을 대고 아래로 가볍게 내립니다 (수염을 쓸어내리는 형상).</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=9746" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(9746)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+나이" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 몇, 얼마 -->
         <div class="card sec1-card" data-word="몇 얼마 몇, 얼마">
           <div class="card-header">
             <span class="word-name">몇, 얼마</span>
@@ -450,20 +396,19 @@
           </div>
           <p class="desc">모았던 손가락을 바깥쪽으로 튕기듯 펴면서 질문하는 표정을 짓습니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7806" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(7806)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+몇+얼마" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 당신 -->
         <div class="card sec1-card" data-word="당신 너">
           <div class="card-header">
             <span class="word-name">당신</span>
             <span class="badge sec1-badge">대명사</span>
           </div>
-          <p class="desc">손끝 또는 손바닥을 펴서 정중하게 상대방 방향을 가리킵니다.</p>
+          <p class="desc">손끝 또는 손바닥을 편 채 정중하게 상대방 방향을 가리킵니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11845" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(11845)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+당신" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
@@ -481,7 +426,6 @@
           </div>
         </div>
 
-        <!-- 알다 -->
         <div class="card sec1-card" data-word="알다">
           <div class="card-header">
             <span class="word-name">알다</span>
@@ -489,12 +433,11 @@
           </div>
           <p class="desc">오른손 손가락 끝을 관자놀이 부근에 대며 고개를 가볍게 끄덕입니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6031" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(6031)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+알다" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 모르다 -->
         <div class="card sec1-card" data-word="모르다">
           <div class="card-header">
             <span class="word-name">모르다</span>
@@ -502,12 +445,11 @@
           </div>
           <p class="desc">턱이나 목 앞을 손바닥으로 스치며 밖으로 털어내듯 동작합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11931" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(11931)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+모르다" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 다시 -->
         <div class="card sec1-card" data-word="다시">
           <div class="card-header">
             <span class="word-name">다시</span>
@@ -515,7 +457,7 @@
           </div>
           <p class="desc">손을 가볍게 돌려 원위치로 가져오며 반복의 의미를 나타냅니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=7422" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(7422)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+다시" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
@@ -526,7 +468,6 @@
     <section id="session-2" class="section-wrap">
       <h2 class="section-title sec2">🙌 수어교육 2차시 - 우리 가족</h2>
       <div class="grid">
-        <!-- 가족 -->
         <div class="card sec2-card" data-word="가족">
           <div class="card-header">
             <span class="word-name">가족</span>
@@ -534,12 +475,11 @@
           </div>
           <p class="desc">양손을 둥글게 모아 지붕이나 울타리를 만들며 한 가족을 나타냅니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6770" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(6770)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+가족" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 누구 -->
         <div class="card sec2-card" data-word="누구">
           <div class="card-header">
             <span class="word-name">누구</span>
@@ -547,12 +487,11 @@
           </div>
           <p class="desc">코앞에서 검지를 살짝 구부렸다 펴며 질문하는 표정을 짓습니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=5394" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(5394)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+누구" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 아버지 -->
         <div class="card sec2-card" data-word="아버지 아빠">
           <div class="card-header">
             <span class="word-name">아버지</span>
@@ -560,12 +499,11 @@
           </div>
           <p class="desc">엄지손가락(남성)을 세워 뺨에 대는 동작으로 표현합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=2570" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(2570)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아버지" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 어머니 -->
         <div class="card sec2-card" data-word="어머니 엄마">
           <div class="card-header">
             <span class="word-name">어머니</span>
@@ -573,12 +511,11 @@
           </div>
           <p class="desc">새끼손가락(여성)을 펴서 뺨에 대는 동작으로 표현합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8214" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(8214)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+어머니" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 남편 -->
         <div class="card sec2-card" data-word="남편">
           <div class="card-header">
             <span class="word-name">남편</span>
@@ -586,12 +523,11 @@
           </div>
           <p class="desc">엄지손가락(남자)과 약지 손가락(결혼반지)을 결합하여 나타냅니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6618" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(6618)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+남편" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 아내 -->
         <div class="card sec2-card" data-word="아내 부인 처">
           <div class="card-header">
             <span class="word-name">아내</span>
@@ -599,12 +535,11 @@
           </div>
           <p class="desc">새끼손가락(여자)과 결혼을 의미하는 수형을 이어붙여 표현합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=11062" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(11062)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아내" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 아들 -->
         <div class="card sec2-card" data-word="아들">
           <div class="card-header">
             <span class="word-name">아들</span>
@@ -612,12 +547,11 @@
           </div>
           <p class="desc">엄지손가락(남자)을 세운 후 출생(태어남)을 나타내는 수형을 결합합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8127" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(8127)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아들" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 딸 -->
         <div class="card sec2-card" data-word="딸">
           <div class="card-header">
             <span class="word-name">딸</span>
@@ -625,12 +559,11 @@
           </div>
           <p class="desc">새끼손가락(여자)을 편 후 출생(태어남)을 나타내는 수형을 결합합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=6756" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(6756)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+딸" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 같이(함께) -->
         <div class="card sec2-card" data-word="같이 함께 같이(함께)">
           <div class="card-header">
             <span class="word-name">같이 (함께)</span>
@@ -638,12 +571,11 @@
           </div>
           <p class="desc">양손 검지를 나란히 붙여 함께 나아가는 모습을 그립니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=19523" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(19523)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+같이+함께" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 지내다(살다) -->
         <div class="card sec2-card" data-word="지내다 살다 지내다(살다)">
           <div class="card-header">
             <span class="word-name">지내다 (살다)</span>
@@ -651,12 +583,11 @@
           </div>
           <p class="desc">가슴 앞에서 손을 편안하게 굴리며 삶을 영위하는 모습을 표현합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8291" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(8291)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+지내다+살다" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 있다 -->
         <div class="card sec2-card" data-word="있다">
           <div class="card-header">
             <span class="word-name">있다</span>
@@ -664,12 +595,11 @@
           </div>
           <p class="desc">주먹에서 엄지와 새끼를 펴서 아래로 살짝 내리는 존재 수형을 취합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=8966" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(8966)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+있다" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 없다 -->
         <div class="card sec2-card" data-word="없다">
           <div class="card-header">
             <span class="word-name">없다</span>
@@ -677,12 +607,11 @@
           </div>
           <p class="desc">손바닥을 편 채 얼굴 앞이나 가슴 앞에서 좌우로 가볍게 흔듭니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=2722" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(2722)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+없다" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
 
-        <!-- 잘하다 -->
         <div class="card sec2-card" data-word="잘하다">
           <div class="card-header">
             <span class="word-name">잘하다</span>
@@ -690,8 +619,274 @@
           </div>
           <p class="desc">엄지손가락을 세워 앞으로 내밀며 칭찬하는 수형을 취합니다.</p>
           <div class="btn-group">
-            <a class="btn btn-dict" href="https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=9543" target="_blank" rel="noopener">국립국어원 ▷</a>
+            <button class="btn btn-dict" onclick="openDirectPopup(9543)">사전 영상 ▷</button>
             <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+잘하다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3차시 -->
+    <section id="session-3" class="section-wrap">
+      <h2 class="section-title sec3">📅 수어교육 3차시 - 시간, 날짜, 약속</h2>
+      <div class="grid">
+        <!-- 번호 -->
+        <div class="card sec3-card" data-word="번호 숫자 순서">
+          <div class="card-header">
+            <span class="word-name">번호</span>
+            <span class="badge sec3-badge">수량</span>
+          </div>
+          <p class="desc">손가락을 차례로 구부리거나 순서를 나타내는 수형을 취합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(5670)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+번호" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 월요일 -->
+        <div class="card sec3-card" data-word="월요일 월 달">
+          <div class="card-header">
+            <span class="word-name">월요일</span>
+            <span class="badge sec3-badge">요일</span>
+          </div>
+          <p class="desc">달(월)을 상징하는 손동작을 취하며 월요일을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(8230)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+월요일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 화요일 -->
+        <div class="card sec3-card" data-word="화요일 화 불">
+          <div class="card-header">
+            <span class="word-name">화요일</span>
+            <span class="badge sec3-badge">요일</span>
+          </div>
+          <p class="desc">불(화)이 피어오르는 모양의 손동작으로 화요일을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(969)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+화요일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 수요일 -->
+        <div class="card sec3-card" data-word="수요일 수 물">
+          <div class="card-header">
+            <span class="word-name">수요일</span>
+            <span class="badge sec3-badge">요일</span>
+          </div>
+          <p class="desc">물(수)이 흐르거나 찰랑이는 수형을 사용하여 수요일을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(6109)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+수요일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 목요일 -->
+        <div class="card sec3-card" data-word="목요일 목 나무">
+          <div class="card-header">
+            <span class="word-name">목요일</span>
+            <span class="badge sec3-badge">요일</span>
+          </div>
+          <p class="desc">나무(목)의 기둥이나 가지를 상징하는 손동작으로 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(6127)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+목요일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 금요일 -->
+        <div class="card sec3-card" data-word="금요일 금 쇠 돈">
+          <div class="card-header">
+            <span class="word-name">금요일</span>
+            <span class="badge sec3-badge">요일</span>
+          </div>
+          <p class="desc">쇠나 금(금빛)을 나타내는 수형을 활용하여 금요일을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(7585)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+금요일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 토요일 -->
+        <div class="card sec3-card" data-word="토요일 토 흙">
+          <div class="card-header">
+            <span class="word-name">토요일</span>
+            <span class="badge sec3-badge">요일</span>
+          </div>
+          <p class="desc">흙(토)을 쥐거나 문지르는 상징 수형으로 토요일을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(10531)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+토요일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 일요일 -->
+        <div class="card sec3-card" data-word="일요일 일 해 태양">
+          <div class="card-header">
+            <span class="word-name">일요일</span>
+            <span class="badge sec3-badge">요일</span>
+          </div>
+          <p class="desc">해(일)나 둥근 태양의 형상을 나타내는 손동작으로 일요일을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(8300)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+일요일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 오늘 -->
+        <div class="card sec3-card" data-word="오늘 지금 금일">
+          <div class="card-header">
+            <span class="word-name">오늘</span>
+            <span class="badge sec3-badge">시제</span>
+          </div>
+          <p class="desc">양손 바닥을 아래로 향하게 하여 가슴 앞에서 가볍게 내립니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(7703)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+오늘" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 내일 -->
+        <div class="card sec3-card" data-word="내일 명일 다음날">
+          <div class="card-header">
+            <span class="word-name">내일</span>
+            <span class="badge sec3-badge">시제</span>
+          </div>
+          <p class="desc">볼이나 턱 부근에서 손을 앞으로 한 칸 튕겨 내밀며 다음날을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(6442)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+내일" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 어제 -->
+        <div class="card sec3-card" data-word="어제 작일 지난날">
+          <div class="card-header">
+            <span class="word-name">어제</span>
+            <span class="badge sec3-badge">시제</span>
+          </div>
+          <p class="desc">뺨 옆에서 손을 어깨 뒤쪽으로 살짝 넘기며 지나간 날을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(8218)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+어제" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 오케이 -->
+        <div class="card sec3-card" data-word="오케이 ok 알겠어 확인">
+          <div class="card-header">
+            <span class="word-name">오케이</span>
+            <span class="badge sec3-badge">표현</span>
+          </div>
+          <p class="desc">엄지와 검지로 둥글게 원(O)을 만들며 동의와 확인을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(153)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+오케이" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 시간 -->
+        <div class="card sec3-card" data-word="시간 시계 때">
+          <div class="card-header">
+            <span class="word-name">시간</span>
+            <span class="badge sec3-badge">시간</span>
+          </div>
+          <p class="desc">손목시계를 가리키거나 시곗바늘이 회전하는 형태를 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(8889)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+시간" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 오전 -->
+        <div class="card sec3-card" data-word="오전 아침">
+          <div class="card-header">
+            <span class="word-name">오전</span>
+            <span class="badge sec3-badge">시간</span>
+          </div>
+          <p class="desc">해가 수평선 위로 떠오르는 모습을 손으로 위로 들어 올리며 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(8002)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+오전" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 오후 -->
+        <div class="card sec3-card" data-word="오후 낮 저녁">
+          <div class="card-header">
+            <span class="word-name">오후</span>
+            <span class="badge sec3-badge">시간</span>
+          </div>
+          <p class="desc">정오를 지나 해가 기울어 내리는 모습을 손으로 가볍게 내립니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(5025)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+오후" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 몇 시? -->
+        <div class="card sec3-card" data-word="몇시 몇 시 몇 시? 시간">
+          <div class="card-header">
+            <span class="word-name">몇 시?</span>
+            <span class="badge sec3-badge">의문사</span>
+          </div>
+          <p class="desc">손목(시계 자리)을 짚은 후 '몇'을 뜻하는 손가락 튕기기 수형을 결합합니다.</p>
+          <div class="btn-group">
+            <span class="btn btn-disabled" aria-disabled="true">영상 준비중</span>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+몇시" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 약속 -->
+        <div class="card sec3-card" data-word="약속 계약">
+          <div class="card-header">
+            <span class="word-name">약속</span>
+            <span class="badge sec3-badge">약속</span>
+          </div>
+          <p class="desc">양손 새끼손가락을 서로 걸어 굳은 다짐을 하듯이 걸어줍니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(12710)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+약속" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 가능하다 -->
+        <div class="card sec3-card" data-word="가능하다 가능 될수있다">
+          <div class="card-header">
+            <span class="word-name">가능하다</span>
+            <span class="badge sec3-badge">상태</span>
+          </div>
+          <p class="desc">오른손 주먹을 쥐고 엄지를 살짝 세우거나 긍정의 확신을 주는 수형을 취합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(12408)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+가능하다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 괜찮다 -->
+        <div class="card sec3-card" data-word="괜찮다 상관없다 문제없다">
+          <div class="card-header">
+            <span class="word-name">괜찮다</span>
+            <span class="badge sec3-badge">상태</span>
+          </div>
+          <p class="desc">코앞이나 턱 부근에서 엄지와 검지를 스치듯 털어내며 편안한 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(9466)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+괜찮다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <!-- 바쁘다 -->
+        <div class="card sec3-card" data-word="바쁘다 분주하다">
+          <div class="card-header">
+            <span class="word-name">바쁘다</span>
+            <span class="badge sec3-badge">상태</span>
+          </div>
+          <p class="desc">손을 가슴 앞에서 빠르게 좌우나 앞뒤로 교차하며 분주함을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(8334)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+바쁘다" target="_blank" rel="noopener">유튜브 ▷</a>
           </div>
         </div>
       </div>
@@ -699,7 +894,18 @@
   </div>
 
   <script>
-    // 1. 회차 선택 스크롤 이동
+    // 국립국어원 전용 팝업 뷰어 (차단 방지 중앙 팝업)
+    function openDirectPopup(originNo) {
+      const url = `https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=${originNo}`;
+      const width = 640;
+      const height = 740;
+      const left = (window.screen.width - width) / 2;
+      const top = (window.screen.height - height) / 2;
+      
+      window.open(url, 'SignDictViewer', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
+    }
+
+    // 1. 회차 이동 스크롤
     function scrollToSession(targetId) {
       if (!targetId) return;
       const targetElement = document.getElementById(targetId);
