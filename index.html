@@ -57,16 +57,16 @@
       position: sticky;
       top: 12px;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.97);
-      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
       border: 1.5px solid #cbd5e1;
-      border-radius: 14px;
-      padding: 12px 14px;
+      border-radius: 16px;
+      padding: 14px 16px;
       margin-bottom: 28px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
     @media (min-width: 640px) {
       .sticky-control {
@@ -76,36 +76,51 @@
       }
     }
 
-    /* 검색창 (밝고 깔끔한 화이트 인풋) */
+    /* ★ 눈에 띄게 강조된 검색창 라인 디자인 ★ */
     .search-box {
       position: relative;
       flex: 1;
     }
     .search-input {
       width: 100%;
-      padding: 11px 16px 11px 40px;
-      font-size: 0.98rem;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 10px;
-      outline: none;
-      background-color: #f8fafc;
-      transition: all 0.2s ease;
-    }
-    .search-input:focus {
-      border-color: var(--primary);
+      padding: 12px 18px 12px 44px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0f172a;
       background-color: #ffffff;
-      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+      /* 또렷한 2px 블루 테두리 및 내부 음영 */
+      border: 2px solid #3b82f6;
+      border-radius: 12px;
+      outline: none;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.12);
+      transition: all 0.2s ease-in-out;
+    }
+    .search-input::placeholder {
+      color: #64748b;
+      font-weight: 500;
+    }
+    /* 마우스 호버 시 라인 강조 */
+    .search-input:hover {
+      border-color: #2563eb;
+      box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+    }
+    /* 클릭(포커스) 시 강력한 라인 및 포커스 링 */
+    .search-input:focus {
+      border-color: #1d4ed8;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.22), 0 4px 12px rgba(29, 78, 216, 0.15);
     }
     .search-icon {
       position: absolute;
-      left: 14px;
+      left: 15px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.05rem;
+      font-size: 1.15rem;
+      color: #2563eb;
       pointer-events: none;
     }
 
-    /* ★ 회차 바로가기 (검색창과 확실히 구분되는 딥 인디고 버튼 스타일) ★ */
+    /* 회차 바로가기 (딥 인디고 전용 버튼) */
     .session-actions {
       display: flex;
     }
@@ -116,13 +131,13 @@
     .session-select {
       appearance: none;
       -webkit-appearance: none;
-      padding: 11px 36px 11px 16px;
-      font-size: 0.92rem;
+      padding: 12px 40px 12px 18px;
+      font-size: 0.95rem;
       font-weight: 700;
       color: #ffffff;
       background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-      border: 1.5px solid #1d4ed8;
-      border-radius: 10px;
+      border: 2px solid #1d4ed8;
+      border-radius: 12px;
       outline: none;
       cursor: pointer;
       width: 100%;
@@ -131,25 +146,23 @@
     }
     .session-select:hover {
       background: linear-gradient(135deg, #172554 0%, #1d4ed8 100%);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 5px 14px rgba(37, 99, 235, 0.35);
       transform: translateY(-1px);
     }
     .session-select:focus {
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
     }
-    /* 드롭다운 옵션 내부 스타일 */
     .session-select option {
       background-color: #ffffff;
       color: #0f172a;
       font-weight: 600;
     }
-    /* 드롭다운 화살표 아이콘 */
     .session-select-wrapper::after {
       content: '▼';
       font-size: 0.75rem;
-      color: #93c5fd;
+      color: #bfdbfe;
       position: absolute;
-      right: 14px;
+      right: 15px;
       top: 50%;
       transform: translateY(-50%);
       pointer-events: none;
@@ -159,7 +172,7 @@
         width: auto;
       }
       .session-select {
-        min-width: 220px;
+        min-width: 230px;
       }
     }
 
@@ -345,7 +358,7 @@
       <p>단어를 직접 검색하거나 회차를 선택하여 원하는 수어 영상으로 이동하세요.</p>
     </header>
 
-    <!-- 상단 컨트롤 (검색창 + 차별화된 회차 바로가기) -->
+    <!-- 상단 컨트롤 (강조된 검색창 + 회차 바로가기) -->
     <div class="sticky-control">
       <div class="search-box">
         <span class="search-icon">🔍</span>
