@@ -15,6 +15,9 @@
       --accent: #d97706;
       --accent-bg: #fffbeb;
       --accent-border: #fde68a;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+      --purple-border: #ddd6fe;
       --text-main: #0f172a;
       --text-sub: #475569;
       --bg-page: #f1f5f9;
@@ -40,7 +43,7 @@
     }
     header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       padding: 10px 0;
     }
     header h1 {
@@ -53,6 +56,52 @@
     header p {
       color: var(--text-sub);
       font-size: 0.95rem;
+    }
+
+    /* 상단 배너: 플래시카드 실행 버튼 */
+    .quiz-banner {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+    }
+    @media (min-width: 640px) {
+      .quiz-banner {
+        flex-direction: row;
+      }
+    }
+    .quiz-banner-text h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .quiz-banner-text p {
+      font-size: 0.88rem;
+      opacity: 0.9;
+    }
+    .btn-start-quiz {
+      background-color: #ffffff;
+      color: #5b21b6;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-start-quiz:hover {
+      background-color: #f5f3ff;
+      transform: translateY(-2px);
     }
 
     /* 상단 고정 제어바 */
@@ -154,7 +203,7 @@
         width: auto;
       }
       .session-select {
-        min-width: 240px;
+        min-width: 250px;
       }
     }
 
@@ -172,18 +221,10 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       scroll-margin-top: 140px;
     }
-    .section-title.sec1 {
-      border-left: 6px solid var(--primary);
-      color: #1e3a8a;
-    }
-    .section-title.sec2 {
-      border-left: 6px solid var(--secondary);
-      color: #064e3b;
-    }
-    .section-title.sec3 {
-      border-left: 6px solid var(--accent);
-      color: #92400e;
-    }
+    .section-title.sec1 { border-left: 6px solid var(--primary); color: #1e3a8a; }
+    .section-title.sec2 { border-left: 6px solid var(--secondary); color: #064e3b; }
+    .section-title.sec3 { border-left: 6px solid var(--accent); color: #92400e; }
+    .section-title.sec4 { border-left: 6px solid var(--purple); color: #5b21b6; }
 
     /* 카드 그리드 */
     .grid {
@@ -205,6 +246,7 @@
     .sec1-card { border-left: 5px solid var(--primary); }
     .sec2-card { border-left: 5px solid var(--secondary); }
     .sec3-card { border-left: 5px solid var(--accent); }
+    .sec4-card { border-left: 5px solid var(--purple); }
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
@@ -233,6 +275,7 @@
     .sec1-badge { background: var(--primary-bg); color: var(--primary); border: 1px solid var(--primary-border); }
     .sec2-badge { background: var(--secondary-bg); color: var(--secondary); border: 1px solid var(--secondary-border); }
     .sec3-badge { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
+    .sec4-badge { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
 
     .desc {
       font-size: 0.92rem;
@@ -289,6 +332,150 @@
       pointer-events: none;
     }
 
+    /* ★ 퀴즈 / 플래시카드 모달 스타일 ★ */
+    .quiz-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .quiz-modal-overlay.active {
+      display: flex;
+    }
+    .quiz-card {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      padding: 26px 22px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      animation: popIn 0.25s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .quiz-badge {
+      background: #ede9fe;
+      color: #6d28d9;
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+    .quiz-close {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      color: #94a3b8;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .quiz-close:hover {
+      color: #0f172a;
+    }
+    .quiz-progress {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: right;
+    }
+    .quiz-body {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .quiz-question-label {
+      font-size: 0.95rem;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .quiz-word-target {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #1e1b4b;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+    .quiz-answer-box {
+      background-color: #f8fafc;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 18px 14px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: left;
+    }
+    .quiz-answer-box.revealed {
+      display: block;
+      animation: fadeIn 0.2s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .quiz-desc-text {
+      font-size: 0.96rem;
+      color: #334155;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .quiz-btn-answer {
+      width: 100%;
+      padding: 13px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      background: #4f46e5;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 8px;
+    }
+    .quiz-btn-answer:hover {
+      background: #4338ca;
+    }
+    .quiz-btn-next {
+      width: 100%;
+      padding: 13px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-btn-next:hover {
+      background: #f1f5f9;
+    }
+    .quiz-filter-select {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.85rem;
+      font-weight: 600;
+      outline: none;
+      color: #334155;
+    }
+
     .no-result {
       display: none;
       text-align: center;
@@ -308,8 +495,17 @@
   <div class="container">
     <header>
       <h1>수어교육 회차별 단어 학습</h1>
-      <p>단어 카드의 <strong>[사전 영상 ▷]</strong>을 누르면 국립국어원 표준 영상창으로 안전하고 깨끗하게 열립니다.</p>
+      <p>단어 카드로 학습하고, 상단 <strong>플래시카드 퀴즈</strong>로 재미있게 복습해보세요!</p>
     </header>
+
+    <!-- ★ 플래시카드 & 퀴즈 모드 배너 ★ -->
+    <div class="quiz-banner">
+      <div class="quiz-banner-text">
+        <h3>💡 배운 수어 기억력 테스트 </h3>
+        <p>단어를 보고 수어를 직접 해본 뒤 정답을 확인하며 장기 기억으로 전환해 보세요.</p>
+      </div>
+      <button class="btn-start-quiz" onclick="openQuizModal()">퀴즈 모드 시작하기 ▷</button>
+    </div>
 
     <!-- 상단 컨트롤 -->
     <div class="sticky-control">
@@ -319,7 +515,7 @@
           type="text" 
           id="searchInput" 
           class="search-input" 
-          placeholder="단어 검색 (예: 월요일, 오늘, 약속, 가족...)" 
+          placeholder="단어 검색 (예: 기쁘다, 슬프다, 오늘, 가족...)" 
           autocomplete="off"
         />
       </div>
@@ -330,6 +526,7 @@
             <option value="session-1">1차시 - 기본 인사와 소개</option>
             <option value="session-2">2차시 - 우리 가족</option>
             <option value="session-3">3차시 - 시간, 날짜, 약속</option>
+            <option value="session-4">4차시 - 감정과 상태 표현</option>
           </select>
         </div>
       </div>
@@ -341,7 +538,7 @@
     <section id="session-1" class="section-wrap">
       <h2 class="section-title sec1">🤟 수어교육 1차시 - 기본 인사와 소개</h2>
       <div class="grid">
-        <div class="card sec1-card" data-word="반갑습니다">
+        <div class="card sec1-card" data-word="반갑습니다" data-session="1">
           <div class="card-header">
             <span class="word-name">반갑습니다</span>
             <span class="badge sec1-badge">인사</span>
@@ -353,7 +550,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="이름">
+        <div class="card sec1-card" data-word="이름" data-session="1">
           <div class="card-header">
             <span class="word-name">이름</span>
             <span class="badge sec1-badge">소개</span>
@@ -365,7 +562,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="무엇">
+        <div class="card sec1-card" data-word="무엇" data-session="1">
           <div class="card-header">
             <span class="word-name">무엇</span>
             <span class="badge sec1-badge">의문사</span>
@@ -377,7 +574,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="나이">
+        <div class="card sec1-card" data-word="나이" data-session="1">
           <div class="card-header">
             <span class="word-name">나이</span>
             <span class="badge sec1-badge">소개</span>
@@ -389,7 +586,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="몇 얼마 몇, 얼마">
+        <div class="card sec1-card" data-word="몇 얼마 몇, 얼마" data-session="1">
           <div class="card-header">
             <span class="word-name">몇, 얼마</span>
             <span class="badge sec1-badge">수량</span>
@@ -401,7 +598,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="당신 너">
+        <div class="card sec1-card" data-word="당신 너" data-session="1">
           <div class="card-header">
             <span class="word-name">당신</span>
             <span class="badge sec1-badge">대명사</span>
@@ -413,8 +610,7 @@
           </div>
         </div>
 
-        <!-- 일(직업) : 비활성화 -->
-        <div class="card sec1-card" data-word="일 직업 일(직업)">
+        <div class="card sec1-card" data-word="일 직업 일(직업)" data-session="1">
           <div class="card-header">
             <span class="word-name">일 (직업)</span>
             <span class="badge sec1-badge">소개</span>
@@ -426,7 +622,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="알다">
+        <div class="card sec1-card" data-word="알다" data-session="1">
           <div class="card-header">
             <span class="word-name">알다</span>
             <span class="badge sec1-badge">인지</span>
@@ -438,7 +634,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="모르다">
+        <div class="card sec1-card" data-word="모르다" data-session="1">
           <div class="card-header">
             <span class="word-name">모르다</span>
             <span class="badge sec1-badge">인지</span>
@@ -450,7 +646,7 @@
           </div>
         </div>
 
-        <div class="card sec1-card" data-word="다시">
+        <div class="card sec1-card" data-word="다시" data-session="1">
           <div class="card-header">
             <span class="word-name">다시</span>
             <span class="badge sec1-badge">부사</span>
@@ -468,7 +664,7 @@
     <section id="session-2" class="section-wrap">
       <h2 class="section-title sec2">🙌 수어교육 2차시 - 우리 가족</h2>
       <div class="grid">
-        <div class="card sec2-card" data-word="가족">
+        <div class="card sec2-card" data-word="가족" data-session="2">
           <div class="card-header">
             <span class="word-name">가족</span>
             <span class="badge sec2-badge">가족</span>
@@ -480,7 +676,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="누구">
+        <div class="card sec2-card" data-word="누구" data-session="2">
           <div class="card-header">
             <span class="word-name">누구</span>
             <span class="badge sec2-badge">의문사</span>
@@ -492,7 +688,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="아버지 아빠">
+        <div class="card sec2-card" data-word="아버지 아빠" data-session="2">
           <div class="card-header">
             <span class="word-name">아버지</span>
             <span class="badge sec2-badge">가족</span>
@@ -504,7 +700,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="어머니 엄마">
+        <div class="card sec2-card" data-word="어머니 엄마" data-session="2">
           <div class="card-header">
             <span class="word-name">어머니</span>
             <span class="badge sec2-badge">가족</span>
@@ -516,7 +712,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="남편">
+        <div class="card sec2-card" data-word="남편" data-session="2">
           <div class="card-header">
             <span class="word-name">남편</span>
             <span class="badge sec2-badge">가족</span>
@@ -528,7 +724,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="아내 부인 처">
+        <div class="card sec2-card" data-word="아내 부인 처" data-session="2">
           <div class="card-header">
             <span class="word-name">아내</span>
             <span class="badge sec2-badge">가족</span>
@@ -540,7 +736,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="아들">
+        <div class="card sec2-card" data-word="아들" data-session="2">
           <div class="card-header">
             <span class="word-name">아들</span>
             <span class="badge sec2-badge">가족</span>
@@ -552,7 +748,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="딸">
+        <div class="card sec2-card" data-word="딸" data-session="2">
           <div class="card-header">
             <span class="word-name">딸</span>
             <span class="badge sec2-badge">가족</span>
@@ -564,7 +760,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="같이 함께 같이(함께)">
+        <div class="card sec2-card" data-word="같이 함께 같이(함께)" data-session="2">
           <div class="card-header">
             <span class="word-name">같이 (함께)</span>
             <span class="badge sec2-badge">상태</span>
@@ -576,7 +772,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="지내다 살다 지내다(살다)">
+        <div class="card sec2-card" data-word="지내다 살다 지내다(살다)" data-session="2">
           <div class="card-header">
             <span class="word-name">지내다 (살다)</span>
             <span class="badge sec2-badge">동사</span>
@@ -588,7 +784,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="있다">
+        <div class="card sec2-card" data-word="있다" data-session="2">
           <div class="card-header">
             <span class="word-name">있다</span>
             <span class="badge sec2-badge">존재</span>
@@ -600,7 +796,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="없다">
+        <div class="card sec2-card" data-word="없다" data-session="2">
           <div class="card-header">
             <span class="word-name">없다</span>
             <span class="badge sec2-badge">존재</span>
@@ -612,7 +808,7 @@
           </div>
         </div>
 
-        <div class="card sec2-card" data-word="잘하다">
+        <div class="card sec2-card" data-word="잘하다" data-session="2">
           <div class="card-header">
             <span class="word-name">잘하다</span>
             <span class="badge sec2-badge">상태</span>
@@ -630,8 +826,7 @@
     <section id="session-3" class="section-wrap">
       <h2 class="section-title sec3">📅 수어교육 3차시 - 시간, 날짜, 약속</h2>
       <div class="grid">
-        <!-- 번호 -->
-        <div class="card sec3-card" data-word="번호 숫자 순서">
+        <div class="card sec3-card" data-word="번호 숫자 순서" data-session="3">
           <div class="card-header">
             <span class="word-name">번호</span>
             <span class="badge sec3-badge">수량</span>
@@ -643,8 +838,7 @@
           </div>
         </div>
 
-        <!-- 월요일 -->
-        <div class="card sec3-card" data-word="월요일 월 달">
+        <div class="card sec3-card" data-word="월요일 월 달" data-session="3">
           <div class="card-header">
             <span class="word-name">월요일</span>
             <span class="badge sec3-badge">요일</span>
@@ -656,8 +850,7 @@
           </div>
         </div>
 
-        <!-- 화요일 -->
-        <div class="card sec3-card" data-word="화요일 화 불">
+        <div class="card sec3-card" data-word="화요일 화 불" data-session="3">
           <div class="card-header">
             <span class="word-name">화요일</span>
             <span class="badge sec3-badge">요일</span>
@@ -669,8 +862,7 @@
           </div>
         </div>
 
-        <!-- 수요일 -->
-        <div class="card sec3-card" data-word="수요일 수 물">
+        <div class="card sec3-card" data-word="수요일 수 물" data-session="3">
           <div class="card-header">
             <span class="word-name">수요일</span>
             <span class="badge sec3-badge">요일</span>
@@ -682,8 +874,7 @@
           </div>
         </div>
 
-        <!-- 목요일 -->
-        <div class="card sec3-card" data-word="목요일 목 나무">
+        <div class="card sec3-card" data-word="목요일 목 나무" data-session="3">
           <div class="card-header">
             <span class="word-name">목요일</span>
             <span class="badge sec3-badge">요일</span>
@@ -695,8 +886,7 @@
           </div>
         </div>
 
-        <!-- 금요일 -->
-        <div class="card sec3-card" data-word="금요일 금 쇠 돈">
+        <div class="card sec3-card" data-word="금요일 금 쇠 돈" data-session="3">
           <div class="card-header">
             <span class="word-name">금요일</span>
             <span class="badge sec3-badge">요일</span>
@@ -708,8 +898,7 @@
           </div>
         </div>
 
-        <!-- 토요일 -->
-        <div class="card sec3-card" data-word="토요일 토 흙">
+        <div class="card sec3-card" data-word="토요일 토 흙" data-session="3">
           <div class="card-header">
             <span class="word-name">토요일</span>
             <span class="badge sec3-badge">요일</span>
@@ -721,8 +910,7 @@
           </div>
         </div>
 
-        <!-- 일요일 -->
-        <div class="card sec3-card" data-word="일요일 일 해 태양">
+        <div class="card sec3-card" data-word="일요일 일 해 태양" data-session="3">
           <div class="card-header">
             <span class="word-name">일요일</span>
             <span class="badge sec3-badge">요일</span>
@@ -734,8 +922,7 @@
           </div>
         </div>
 
-        <!-- 오늘 -->
-        <div class="card sec3-card" data-word="오늘 지금 금일">
+        <div class="card sec3-card" data-word="오늘 지금 금일" data-session="3">
           <div class="card-header">
             <span class="word-name">오늘</span>
             <span class="badge sec3-badge">시제</span>
@@ -747,8 +934,7 @@
           </div>
         </div>
 
-        <!-- 내일 -->
-        <div class="card sec3-card" data-word="내일 명일 다음날">
+        <div class="card sec3-card" data-word="내일 명일 다음날" data-session="3">
           <div class="card-header">
             <span class="word-name">내일</span>
             <span class="badge sec3-badge">시제</span>
@@ -760,8 +946,7 @@
           </div>
         </div>
 
-        <!-- 어제 -->
-        <div class="card sec3-card" data-word="어제 작일 지난날">
+        <div class="card sec3-card" data-word="어제 작일 지난날" data-session="3">
           <div class="card-header">
             <span class="word-name">어제</span>
             <span class="badge sec3-badge">시제</span>
@@ -773,8 +958,7 @@
           </div>
         </div>
 
-        <!-- 오케이 -->
-        <div class="card sec3-card" data-word="오케이 ok 알겠어 확인">
+        <div class="card sec3-card" data-word="오케이 ok 알겠어 확인" data-session="3">
           <div class="card-header">
             <span class="word-name">오케이</span>
             <span class="badge sec3-badge">표현</span>
@@ -786,8 +970,7 @@
           </div>
         </div>
 
-        <!-- 시간 -->
-        <div class="card sec3-card" data-word="시간 시계 때">
+        <div class="card sec3-card" data-word="시간 시계 때" data-session="3">
           <div class="card-header">
             <span class="word-name">시간</span>
             <span class="badge sec3-badge">시간</span>
@@ -799,8 +982,7 @@
           </div>
         </div>
 
-        <!-- 오전 -->
-        <div class="card sec3-card" data-word="오전 아침">
+        <div class="card sec3-card" data-word="오전 아침" data-session="3">
           <div class="card-header">
             <span class="word-name">오전</span>
             <span class="badge sec3-badge">시간</span>
@@ -812,8 +994,7 @@
           </div>
         </div>
 
-        <!-- 오후 -->
-        <div class="card sec3-card" data-word="오후 낮 저녁">
+        <div class="card sec3-card" data-word="오후 낮 저녁" data-session="3">
           <div class="card-header">
             <span class="word-name">오후</span>
             <span class="badge sec3-badge">시간</span>
@@ -825,8 +1006,7 @@
           </div>
         </div>
 
-        <!-- 몇 시? -->
-        <div class="card sec3-card" data-word="몇시 몇 시 몇 시? 시간">
+        <div class="card sec3-card" data-word="몇시 몇 시 몇 시? 시간" data-session="3">
           <div class="card-header">
             <span class="word-name">몇 시?</span>
             <span class="badge sec3-badge">의문사</span>
@@ -838,8 +1018,7 @@
           </div>
         </div>
 
-        <!-- 약속 -->
-        <div class="card sec3-card" data-word="약속 계약">
+        <div class="card sec3-card" data-word="약속 계약" data-session="3">
           <div class="card-header">
             <span class="word-name">약속</span>
             <span class="badge sec3-badge">약속</span>
@@ -851,8 +1030,7 @@
           </div>
         </div>
 
-        <!-- 가능하다 -->
-        <div class="card sec3-card" data-word="가능하다 가능 될수있다">
+        <div class="card sec3-card" data-word="가능하다 가능 될수있다" data-session="3">
           <div class="card-header">
             <span class="word-name">가능하다</span>
             <span class="badge sec3-badge">상태</span>
@@ -864,8 +1042,7 @@
           </div>
         </div>
 
-        <!-- 괜찮다 -->
-        <div class="card sec3-card" data-word="괜찮다 상관없다 문제없다">
+        <div class="card sec3-card" data-word="괜찮다 상관없다 문제없다" data-session="3">
           <div class="card-header">
             <span class="word-name">괜찮다</span>
             <span class="badge sec3-badge">상태</span>
@@ -877,8 +1054,7 @@
           </div>
         </div>
 
-        <!-- 바쁘다 -->
-        <div class="card sec3-card" data-word="바쁘다 분주하다">
+        <div class="card sec3-card" data-word="바쁘다 분주하다" data-session="3">
           <div class="card-header">
             <span class="word-name">바쁘다</span>
             <span class="badge sec3-badge">상태</span>
@@ -891,10 +1067,245 @@
         </div>
       </div>
     </section>
+
+    <!-- 4차시 -->
+    <section id="session-4" class="section-wrap">
+      <h2 class="section-title sec4">💜 수어교육 4차시 - 감정과 상태 표현</h2>
+      <div class="grid">
+        <div class="card sec4-card" data-word="기쁘다 즐겁다 재미있다 신나다 행복 기쁨" data-session="4">
+          <div class="card-header">
+            <span class="word-name">기쁘다/즐겁다/재미있다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">가슴 앞에서 손바닥을 펴서 위로 쓸어 올리며 환하고 밝은 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(3874)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+기쁘다+즐겁다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="괴롭다 걱정되다 고민 염려 불안 근심" data-session="4">
+          <div class="card-header">
+            <span class="word-name">괴롭다/걱정되다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">이마나 가슴 부근에서 손을 쥐어짜듯 움직이며 괴로워하는 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(5127)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+괴롭다+걱정되다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="슬프다 눈물 울다 애통 비통" data-session="4">
+          <div class="card-header">
+            <span class="word-name">슬프다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">눈 밑에서 검지를 아래로 쓸어내려 눈물이 흘러내리는 형상을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(7240)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+슬프다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="화나다 분노 열받다 짜증 씩씩거리다" data-session="4">
+          <div class="card-header">
+            <span class="word-name">화나다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">가슴 속에서 주먹을 쥔 손을 위로 치받쳐 올리며 분노의 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(1086)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+화나다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="놀라다 깜짝 충격 기겁" data-session="4">
+          <div class="card-header">
+            <span class="word-name">놀라다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">가슴 앞에서 모았던 손가락을 순간적으로 활짝 펼치며 눈과 입을 크게 벌립니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(2336)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+놀라다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="두렵다 무섭다 공포 겁나다 두려움" data-session="4">
+          <div class="card-header">
+            <span class="word-name">두렵다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">가슴 앞에서 두 손을 오므려 가볍게 떨며 위축되는 동작을 취합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(10967)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+두렵다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="답답하다 속상하다 억울 홧병 답답 속상" data-session="4">
+          <div class="card-header">
+            <span class="word-name">답답하다/속상하다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">가슴을 주먹이나 손바닥으로 가볍게 치거나 쓸어내리며 답답함을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(11833)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+답답하다+속상하다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="힘들다 어렵다 지치다 벅차다 곤란 고생" data-session="4">
+          <div class="card-header">
+            <span class="word-name">힘들다</span>
+            <span class="badge sec4-badge">상태</span>
+          </div>
+          <p class="desc">턱이나 뺨 옆에서 손을 꺾거나 아래로 늘어뜨리며 힘겨움을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(4178)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+힘들다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="피곤하다 졸리다 피로 나른 지침" data-session="4">
+          <div class="card-header">
+            <span class="word-name">피곤하다</span>
+            <span class="badge sec4-badge">상태</span>
+          </div>
+          <p class="desc">양어깨를 늘어뜨리거나 턱을 받치며 피로에 지친 표정을 짓습니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(12438)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+피곤하다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="아프다 통통 병 질환 고통 쓰리다" data-session="4">
+          <div class="card-header">
+            <span class="word-name">아프다</span>
+            <span class="badge sec4-badge">상태</span>
+          </div>
+          <p class="desc">오른손 검지와 중지를 모아 아픈 환부나 이마를 찌르듯 털어줍니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(5621)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+아프다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="편하다 편안 안락 편리 여유" data-session="4">
+          <div class="card-header">
+            <span class="word-name">편하다</span>
+            <span class="badge sec4-badge">상태</span>
+          </div>
+          <p class="desc">가슴 앞에서 두 손바닥을 부드럽게 원형을 그리며 쓸어내립니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(12628)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+편하다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="행복하다 행복 축복 기쁨" data-session="4">
+          <div class="card-header">
+            <span class="word-name">행복하다</span>
+            <span class="badge sec4-badge">감정</span>
+          </div>
+          <p class="desc">손바닥을 가슴에 얹거나 가슴 앞에서 부드럽게 모으며 행복을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(10223)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+행복하다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="좋다 최고 훌륭 선호 마음에들다" data-session="4">
+          <div class="card-header">
+            <span class="word-name">좋다</span>
+            <span class="badge sec4-badge">상태</span>
+          </div>
+          <p class="desc">오른손 주먹의 엄지손가락을 곧게 세우며 가볍게 앞으로 내밉니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(9078)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+좋다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="나쁘다 불량 악 엉망 못되다" data-session="4">
+          <div class="card-header">
+            <span class="word-name">나쁘다</span>
+            <span class="badge sec4-badge">상태</span>
+          </div>
+          <p class="desc">코앞에서 손바닥을 밖으로 쳐내듯 돌리거나 엄지를 아래로 내립니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(4535)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+나쁘다" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="요즘 최근 요새 근래 요즈음" data-session="4">
+          <div class="card-header">
+            <span class="word-name">요즘</span>
+            <span class="badge sec4-badge">시간</span>
+          </div>
+          <p class="desc">양손 바닥을 위로 하여 가슴 앞에서 가볍게 앞뒤로 흔들며 최근을 표현합니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(3261)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+요즘" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+
+        <div class="card sec4-card" data-word="그런데 그러나 하지만 그렇지만 단" data-session="4">
+          <div class="card-header">
+            <span class="word-name">그런데/그러나</span>
+            <span class="badge sec4-badge">접속사</span>
+          </div>
+          <p class="desc">오른손 검지를 세워 좌우로 반전시키며 내용의 전환을 나타냅니다.</p>
+          <div class="btn-group">
+            <button class="btn btn-dict" onclick="openDirectPopup(12778)">사전 영상 ▷</button>
+            <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=수어+그런데+그러나" target="_blank" rel="noopener">유튜브 ▷</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ★ 플래시카드 / 퀴즈 팝업 레이어 ★ -->
+  <div id="quizModal" class="quiz-modal-overlay" onclick="closeQuizModalOnBg(event)">
+    <div class="quiz-card">
+      <div class="quiz-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="quiz-badge">플래시카드</span>
+          <select id="quizFilter" class="quiz-filter-select" onchange="initQuizList()">
+            <option value="all">전체 차시 랜덤</option>
+            <option value="1">1차시만</option>
+            <option value="2">2차시만</option>
+            <option value="3">3차시만</option>
+            <option value="4">4차시만</option>
+          </select>
+        </div>
+        <button class="quiz-close" onclick="closeQuizModal()">&times;</button>
+      </div>
+
+      <div id="quizProgress" class="quiz-progress">1 / 10</div>
+
+      <div class="quiz-body">
+        <div class="quiz-question-label">이 단어의 수어 손동작을 직접 해보세요!</div>
+        <div id="quizWord" class="quiz-word-target">반갑습니다</div>
+
+        <!-- 정답 공개 영역 -->
+        <div id="quizAnswerBox" class="quiz-answer-box">
+          <div id="quizDesc" class="quiz-desc-text">가슴 앞에서 두 주먹을 가볍게 쥐고 위아래로 흔듭니다.</div>
+          <div id="quizBtnGroup" class="btn-group">
+            <!-- 동적 버튼 삽입 -->
+          </div>
+        </div>
+
+        <button id="btnReveal" class="quiz-btn-answer" onclick="revealAnswer()">정답 동작 & 영상 확인 👀</button>
+        <button id="btnNext" class="quiz-btn-next" onclick="nextQuestion()" style="display:none;">다음 단어로 ➔</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // 국립국어원 전용 팝업 뷰어 (차단 방지 중앙 팝업)
+    // 1. 국립국어원 전용 뷰어 팝업 열기
     function openDirectPopup(originNo) {
       const url = `https://sldict.korean.go.kr/front/sign/signContentsView.do?origin_no=${originNo}`;
       const width = 640;
@@ -905,7 +1316,7 @@
       window.open(url, 'SignDictViewer', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
     }
 
-    // 1. 회차 이동 스크롤
+    // 2. 회차 이동 스크롤
     function scrollToSession(targetId) {
       if (!targetId) return;
       const targetElement = document.getElementById(targetId);
@@ -914,7 +1325,7 @@
       }
     }
 
-    // 2. 실시간 단어 검색 및 자동 필터링
+    // 3. 실시간 단어 검색 필터링
     const searchInput = document.getElementById('searchInput');
     const cards = document.querySelectorAll('.card');
     const sections = document.querySelectorAll('.section-wrap');
@@ -943,6 +1354,85 @@
 
       noResult.style.display = (visibleCardCount === 0) ? 'block' : 'none';
     });
+
+    // 4. 플래시카드 & 퀴즈 로직
+    let quizList = [];
+    let currentQuizIndex = 0;
+
+    function openQuizModal() {
+      document.getElementById('quizModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      initQuizList();
+    }
+
+    function closeQuizModal() {
+      document.getElementById('quizModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function closeQuizModalOnBg(e) {
+      if (e.target.id === 'quizModal') closeQuizModal();
+    }
+
+    // 카드 데이터 수집 및 무작위 셔플
+    function initQuizList() {
+      const filter = document.getElementById('quizFilter').value;
+      const cardElements = document.querySelectorAll('.card');
+      quizList = [];
+
+      cardElements.forEach(card => {
+        const session = card.getAttribute('data-session');
+        if (filter === 'all' || filter === session) {
+          const word = card.querySelector('.word-name').textContent;
+          const desc = card.querySelector('.desc').textContent;
+          const btnGroup = card.querySelector('.btn-group').innerHTML;
+          quizList.push({ word, desc, btnGroup });
+        }
+      });
+
+      // Fisher-Yates 무작위 셔플
+      for (let i = quizList.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [quizList[i], quizList[j]] = [quizList[j], quizList[i]];
+      }
+
+      currentQuizIndex = 0;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      if (quizList.length === 0) {
+        document.getElementById('quizWord').textContent = "단어가 없습니다.";
+        return;
+      }
+
+      const cur = quizList[currentQuizIndex];
+      document.getElementById('quizProgress').textContent = `${currentQuizIndex + 1} / ${quizList.length}`;
+      document.getElementById('quizWord').textContent = cur.word;
+      document.getElementById('quizDesc').textContent = cur.desc;
+      document.getElementById('quizBtnGroup').innerHTML = cur.btnGroup;
+
+      // 뷰 리셋
+      document.getElementById('quizAnswerBox').classList.remove('revealed');
+      document.getElementById('btnReveal').style.display = 'block';
+      document.getElementById('btnNext').style.display = 'none';
+    }
+
+    function revealAnswer() {
+      document.getElementById('quizAnswerBox').classList.add('revealed');
+      document.getElementById('btnReveal').style.display = 'none';
+      document.getElementById('btnNext').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentQuizIndex++;
+      if (currentQuizIndex >= quizList.length) {
+        alert("🎉 모든 단어를 한 바퀴 완주했습니다! 다시 섞어서 시작합니다.");
+        initQuizList();
+      } else {
+        loadQuestion();
+      }
+    }
   </script>
 </body>
 </html>
